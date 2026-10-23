@@ -24,10 +24,18 @@ export async function connectToMongoDB() {
     }
 }
 
-await connectToMongoDB();
+const connectedClient = await connectToMongoDB();
+const db = connectedClient.db('simpleCrudDB');
+const users = db.collection('users');
 
 app.get('/', (req, res) => {
     res.send('Single CRUD Server  is running');
+});
+
+app.get('/users', async (req, res) => {
+    const cursor = users.find({});
+    const allUsers = await cursor.toArray();
+    res.send(allUsers);
 });
 
 app.listen(port, () => {
