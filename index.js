@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import 'dotenv/config'
 
 const app = express();
@@ -36,6 +36,17 @@ app.get('/users', async (req, res) => {
     const cursor = users.find({});
     const allUsers = await cursor.toArray();
     res.send(allUsers);
+});
+
+//specific data capture (: means dynamic data in next.js)
+
+app.get('/users/:id', async (req, res) => {
+    console.log('params in the server', req.params);
+    const id = req.params.id;
+
+    const query = { _id: new ObjectId(id) };
+    const result = await users.findOne(query);
+    res.send(result);
 });
 
 app.post('/users', async (req, res) => {
